@@ -4,10 +4,10 @@
 
 ## Installation
 
-  - docker version
-	- sudo docker pull galam/oracle-xe-12c
-	- docker images
-	- sudo docker run --name oracle-xe-12c -d -p 1521:1521 galam/oracle-xe-12c
+$ docker version
+$ sudo docker pull galam/oracle-xe-12c
+$ docker images
+$ sudo docker run --name oracle-xe-12c -d -p 1521:1521 galam/oracle-xe-12c
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
@@ -41,9 +41,9 @@
 
 ```bash
 $ npm install
-  - npm i -g @nestjs/cli
-	- nest new apinotificacao
-		- yarn
+$ npm i -g @nestjs/cli
+$ nest new apinotificacao
+$ yarn
 ```
 
 ## Running the app
