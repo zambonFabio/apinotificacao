@@ -46,6 +46,11 @@ $ npm install
 $ npm i -g @nestjs/cli
 $ nest new apinotificacao
 $ yarn
+$ yarn oracledb
+$ yarn typeorm
+$ yarn add @nestjs/typeorm
+$ wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linuxx64.zip
+  unzip instantclient-basic-linuxx64.zip
 ```
 
 ## Running the app
