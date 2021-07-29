@@ -9,6 +9,15 @@ $ docker version
 $ sudo docker pull galam/oracle-xe-12c
 $ docker images
 $ sudo docker run --name oracle-xe-12c -d -p 1521:1521 galam/oracle-xe-12c
+$ para acesso ao oracle no linux foi utilizado o DBeaver
+$ CREATE USER api_notificacao IDENTIFIED BY oracle
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE temp
+  QUOTA UNLIMITED ON USERS;
+$ GRANT CREATE SESSION TO api_notificacao;
+$ GRANT READ ANY TABLE TO api_notificacao;
+$ GRANT SELECT ANY DICTIONARY TO api_notificacao;
+$ GRANT CREATE TABLE TO api_notificacao;
 ```
 
 <p align="center">
