@@ -1,4 +1,6 @@
-import { BeforeInsert, Column, Entity, getManager, PrimaryColumn } from 'typeorm';
+import { AplicativoAssunto } from 'src/app/aplicativo-assunto/entities/aplicativo-assunto.entity';
+import { Dispositivo } from 'src/app/dispositivo/entities/dispositivo.entity';
+import { BeforeInsert, Column, Entity, getManager, JoinColumn, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity('GNTF_APLICATIVO')
 export class Aplicativo {
@@ -31,6 +33,14 @@ export class Aplicativo {
 
     @Column({ name: 'DS_CREDENCFB' })
     credencialFirebase?: string;
+
+    @OneToMany(() => Dispositivo, (dispositivo: Dispositivo) => dispositivo.aplicativo)
+    @JoinColumn({ name: 'ID_APLICATIVO', referencedColumnName: 'aplicativoId' })
+    dispositivos: Dispositivo[];
+
+    @OneToMany(() => AplicativoAssunto, (aplicativoAssunto: AplicativoAssunto) => aplicativoAssunto.aplicativo)
+    @JoinColumn({ name: 'ID_APLICATIVO', referencedColumnName: 'aplicativoId' })
+    AplicativoAssuntoAplicativos: Dispositivo[];
 
     @BeforeInsert()
     async beforeinsert() {

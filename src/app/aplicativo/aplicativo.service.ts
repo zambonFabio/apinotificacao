@@ -18,14 +18,16 @@ export class AplicativoService {
     async create(usuarioAutenticado: IUsuarioAutenticado, createAplicativoDto: CreateAplicativoDto) {
         const { nome, credencialFirebase } = createAplicativoDto;
 
-        const aplicativo = this.aplicativoRepo.create({
+        let aplicativo = this.aplicativoRepo.create({
             alteradoPorTipo: usuarioAutenticado.tipoMatricula,
             alteradoPorMatricula: usuarioAutenticado.codigoMatricula,
             nome,
             credencialFirebase,
         });
 
-        return await this.aplicativoRepo.save(aplicativo);
+        aplicativo = await this.aplicativoRepo.save(aplicativo);
+
+        return { id: aplicativo.id, nome: aplicativo.nome, credencialFirebase: aplicativo.credencialFirebase };
     }
 
     async findAll(query: FindAllAplicativoDto) {
@@ -37,6 +39,7 @@ export class AplicativoService {
         const skip = take * (page - 1);
 
         const result = await this.aplicativoRepo.findAndCount({
+            select: ['id', 'nome', 'credencialFirebase'],
             where: {
                 ...(nome ? { nome: ILike(`%${String(nome).replace(/ /g, '%')}%`) } : undefined),
                 cancelado: deletedo,
@@ -68,7 +71,7 @@ export class AplicativoService {
             throw new BadRequestException('Aplicativo não encontrado.');
         }
 
-        return aplicativo;
+        return { id: aplicativo.id, nome: aplicativo.nome, credencialFirebase: aplicativo.credencialFirebase };
     }
 
     async update(usuarioAutenticado: IUsuarioAutenticado, id: number, updateAplicativoDto: UpdateAplicativoDto) {
@@ -89,7 +92,9 @@ export class AplicativoService {
             throw new BadRequestException('Aplicativo não encontrado.');
         }
 
-        return await this.findOne(id);
+        const aplicativo = await this.findOne(id);
+
+        return { id: aplicativo.id, nome: aplicativo.nome, credencialFirebase: aplicativo.credencialFirebase };
     }
 
     async remove(usuarioAutenticado: IUsuarioAutenticado, id: number) {

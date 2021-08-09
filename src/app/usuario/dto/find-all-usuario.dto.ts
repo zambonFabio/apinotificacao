@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsBooleanString, IsNotEmpty, IsNumberString, IsOptional, IsString, ValidateNested } from 'class-validator';
 
-export class FindAllAplicativoDto {
+export class FindAllUsuarioDto {
     @IsNotEmpty({
         message: 'Page é obrigatório!',
     })
@@ -22,29 +22,26 @@ export class FindAllAplicativoDto {
 
     @IsOptional()
     @IsString()
-    @ApiProperty({ required: false, description: 'Procura o Aplicativo pelo nome.' })
-    nome?: string;
+    @ApiProperty({ required: false, description: 'Procura o usuário pelo uid.' })
+    uid?: string;
 }
 
-class AplicativoDto {
-    @ApiProperty({ required: true, description: 'Identificador do Aplicativo.' })
-    id: number;
+class UsuarioDto {
+    @ApiProperty({ required: true, description: 'Identificador do usuário.' })
+    id: string;
 
-    @ApiProperty({ required: true, description: 'Nome do Aplicativo.' })
-    nome: string;
-
-    @ApiProperty({ required: false, description: 'Credenciais do Aplicativo no Firebase.' })
-    credencialFirebase?: string;
+    @ApiProperty({ required: true, description: 'UID do usuário do sistema de origem.' })
+    uid: string;
 }
 
-class AplicativosDto {
+class UsuariosDto {
     @ApiProperty({})
     @ValidateNested()
-    @Type(() => AplicativoDto)
-    aplicativo: AplicativoDto;
+    @Type(() => UsuarioDto)
+    usuario: UsuarioDto;
 }
 
-export class FindAllAplicativoResponseDto {
+export class FindAllUsuarioResponseDto {
     @ApiProperty({ required: true, description: 'Número da página de paginação.' })
     page: number;
 
@@ -54,11 +51,11 @@ export class FindAllAplicativoResponseDto {
     @ApiProperty({ required: false, description: 'Define se retorna itens excluídos.' })
     deletedo?: string;
 
-    @ApiProperty({ required: false, description: 'Procura o Aplicativo pelo nome.' })
-    nome: string;
+    @ApiProperty({ required: false, description: 'Procura o usuário pelo uid.' })
+    uid: string;
 
-    @ApiProperty({ required: false, description: 'Aplicativos encontrados.' })
+    @ApiProperty({ required: false, description: 'Usuário encontrados.' })
     @ValidateNested()
-    @Type(() => AplicativosDto)
-    aplicativos: AplicativosDto[];
+    @Type(() => UsuariosDto)
+    usuarios: UsuariosDto[];
 }

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsBooleanString, IsNotEmpty, IsNumberString, IsOptional, IsString, ValidateNested } from 'class-validator';
 
-export class FindAllAplicativoDto {
+export class FindAllDispositivoDto {
     @IsNotEmpty({
         message: 'Page é obrigatório!',
     })
@@ -22,29 +22,35 @@ export class FindAllAplicativoDto {
 
     @IsOptional()
     @IsString()
-    @ApiProperty({ required: false, description: 'Procura o Aplicativo pelo nome.' })
-    nome?: string;
+    @ApiProperty({ required: false, description: 'Procura dispositivo pelo codigo.' })
+    codigo?: string;
 }
 
-class AplicativoDto {
-    @ApiProperty({ required: true, description: 'Identificador do Aplicativo.' })
+class DispositivoDto {
+    @ApiProperty({ required: true, description: 'Id do Dispositivo.' })
     id: number;
 
-    @ApiProperty({ required: true, description: 'Nome do Aplicativo.' })
-    nome: string;
+    @ApiProperty({ required: true, description: 'Id do Aplicativo.' })
+    aplicativoId: number;
 
-    @ApiProperty({ required: false, description: 'Credenciais do Aplicativo no Firebase.' })
-    credencialFirebase?: string;
+    @ApiProperty({ required: true, description: 'Id do Usuario.' })
+    usuarioId: number;
+
+    @ApiProperty({ required: true, description: 'Código do dispositivo.' })
+    codigo: string;
+
+    @ApiProperty({ required: false, description: 'Token do dispositivo gerado pelo Firebase.' })
+    tokenFirebase?: string;
 }
 
-class AplicativosDto {
+class DispositivosDto {
     @ApiProperty({})
     @ValidateNested()
-    @Type(() => AplicativoDto)
-    aplicativo: AplicativoDto;
+    @Type(() => DispositivoDto)
+    dispositivo: DispositivoDto;
 }
 
-export class FindAllAplicativoResponseDto {
+export class FindAllDispositivoResponseDto {
     @ApiProperty({ required: true, description: 'Número da página de paginação.' })
     page: number;
 
@@ -54,11 +60,11 @@ export class FindAllAplicativoResponseDto {
     @ApiProperty({ required: false, description: 'Define se retorna itens excluídos.' })
     deletedo?: string;
 
-    @ApiProperty({ required: false, description: 'Procura o Aplicativo pelo nome.' })
-    nome: string;
+    @ApiProperty({ required: false, description: 'Procura o Dispositivo pelo codigo.' })
+    codigo: string;
 
-    @ApiProperty({ required: false, description: 'Aplicativos encontrados.' })
+    @ApiProperty({ required: false, description: 'Dispositivos encontrados.' })
     @ValidateNested()
-    @Type(() => AplicativosDto)
-    aplicativos: AplicativosDto[];
+    @Type(() => DispositivosDto)
+    dispositivos: DispositivosDto[];
 }

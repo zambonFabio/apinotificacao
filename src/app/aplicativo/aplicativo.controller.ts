@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Param, Delete, Query, ValidationPipe, Request, UseGuards, Put } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../autenticacao/jwt/jwt.guard';
 import { AplicativoService } from './aplicativo.service';
-import { CreateAplicativoDto } from './dto/create-aplicativo.dto';
-import { FindAllAplicativoDto } from './dto/find-all-aplicativo.dto';
+import { CreateAplicativoDto, CreateAplicativoResponseDto } from './dto/create-aplicativo.dto';
+import { FindAllAplicativoDto, FindAllAplicativoResponseDto } from './dto/find-all-aplicativo.dto';
+import { FindOneAplicativoResponseDto } from './dto/find-one-aplicativo.dto';
 import { UpdateAplicativoDto } from './dto/update-aplicativo.dto';
 
 @ApiTags('Aplicativo')
@@ -14,14 +15,15 @@ export class AplicativoController {
     @Post()
     @UseGuards(JwtGuard)
     @ApiBearerAuth()
+    @ApiCreatedResponse({ type: CreateAplicativoResponseDto })
     create(@Request() req, @Body(new ValidationPipe()) createAplicativoDto: CreateAplicativoDto) {
         return this.aplicativoService.create(req.user, createAplicativoDto);
     }
 
     @Get()
-    @ApiOkResponse()
     @UseGuards(JwtGuard)
     @ApiBearerAuth()
+    @ApiOkResponse({ type: FindAllAplicativoResponseDto })
     findAll(@Query(new ValidationPipe()) query: FindAllAplicativoDto) {
         return this.aplicativoService.findAll(query);
     }
@@ -29,6 +31,7 @@ export class AplicativoController {
     @Get(':id')
     @UseGuards(JwtGuard)
     @ApiBearerAuth()
+    @ApiOkResponse({ type: FindOneAplicativoResponseDto })
     findOne(@Param('id') id: string) {
         return this.aplicativoService.findOne(+id);
     }
@@ -36,6 +39,7 @@ export class AplicativoController {
     @Put(':id')
     @UseGuards(JwtGuard)
     @ApiBearerAuth()
+    @ApiOkResponse({ type: CreateAplicativoResponseDto })
     update(@Request() req, @Param('id') id: string, @Body() updateAplicativoDto: UpdateAplicativoDto) {
         return this.aplicativoService.update(req.user, +id, updateAplicativoDto);
     }
@@ -43,6 +47,7 @@ export class AplicativoController {
     @Delete(':id')
     @UseGuards(JwtGuard)
     @ApiBearerAuth()
+    @ApiOkResponse({ description: 'Aplicativo removido com sucesso' })
     remove(@Request() req, @Param('id') id: string) {
         return this.aplicativoService.remove(req.user, +id);
     }
