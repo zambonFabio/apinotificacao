@@ -15,6 +15,8 @@ async function bootstrap() {
     //     }),
     // );
 
+    app.useGlobalPipes(new ValidationPipe());
+
     app.use((req: Request, res, next) => {
         res.header('x-powered-by', 'apinotificacao');
         if (req.url === '/') {
@@ -24,7 +26,12 @@ async function bootstrap() {
     });
 
     if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'homolog') {
-        const options = new DocumentBuilder().addBearerAuth().setTitle('Documentação da API de Notificação').setVersion('0.1.0').build();
+        const options = new DocumentBuilder()
+            .addBearerAuth()
+            .setTitle('API de Notificação')
+            .setDescription('API responsável por gerenciar notificações CRUD e push notification.')
+            .setVersion('1.0.0')
+            .build();
         const document = SwaggerModule.createDocument(app, options);
 
         SwaggerModule.setup('api', app, document);

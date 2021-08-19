@@ -46,7 +46,7 @@ export class AplicativoAssuntoService {
             }
 
             if (!aplicativoRelacionado) {
-                await this.aplicativoService.findOne(aplicativo.id);
+                // await this.aplicativoService.findOne(aplicativo.id);
 
                 const aplicativoAssunto = this.aplicativoAssuntoRepo.create({
                     alteradoPorTipo: usuarioAutenticado.tipoMatricula,
@@ -79,6 +79,6 @@ export class AplicativoAssuntoService {
             }
         }
 
-        return 0;
+        return;
     }
 }

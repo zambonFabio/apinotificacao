@@ -12,6 +12,8 @@ import { UsuarioModule } from './app/usuario/usuario.module';
 import { Usuario } from './app/usuario/entities/usuario.entity';
 import { AplicativoAssuntoModule } from './app/aplicativo-assunto/aplicativo-assunto.module';
 import { AplicativoAssunto } from './app/aplicativo-assunto/entities/aplicativo-assunto.entity';
+import { UsuarioAssuntoModule } from './app/usuario-assunto/usuario-assunto.module';
+import { UsuarioAssunto } from './app/usuario-assunto/entities/usuario-assunto.entity';
 
 @Module({
     imports: [
@@ -26,16 +28,17 @@ import { AplicativoAssunto } from './app/aplicativo-assunto/entities/aplicativo-
             schema: process.env.TYPEORM_SCHEMA,
             username: process.env.TYPEORM_USERNAME,
             password: process.env.TYPEORM_PASSWORD,
-            entities: [AplicativoAssunto, Usuario, Aplicativo, Dispositivo, Assunto],
+            entities: [Aplicativo],
             synchronize: false,
             logging: true,
         }),
         AplicativoModule,
         AutenticacaoModule,
-        DispositivoModule,
-        AssuntoModule,
-        UsuarioModule,
-        AplicativoAssuntoModule,
+        // DispositivoModule,
+        // AssuntoModule,
+        // UsuarioModule,
+        // AplicativoAssuntoModule,
+        // UsuarioAssuntoModule,
     ],
     controllers: [],
     providers: [],

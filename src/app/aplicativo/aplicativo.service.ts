@@ -18,6 +18,15 @@ export class AplicativoService {
     async create(usuarioAutenticado: IUsuarioAutenticado, createAplicativoDto: CreateAplicativoDto) {
         const { nome, credencialFirebase } = createAplicativoDto;
 
+        const existente = await this.aplicativoRepo.find({
+            withDeleted: false,
+            where: { nome },
+        });
+
+        if (existente.length > 0) {
+            throw new BadRequestException(`Nome de Aplicativo(${nome}) já cadastrado`);
+        }
+
         let aplicativo = this.aplicativoRepo.create({
             alteradoPorTipo: usuarioAutenticado.tipoMatricula,
             alteradoPorMatricula: usuarioAutenticado.codigoMatricula,
@@ -33,17 +42,19 @@ export class AplicativoService {
     async findAll(query: FindAllAplicativoDto) {
         const page = +query.page;
         const take = query.limit ? +query.limit : 20;
-        const deletedo = query.deletedo === 'true';
         const nome = query.nome ?? null;
 
         const skip = take * (page - 1);
 
+        let whereFind = {};
+        if (nome) {
+            whereFind = { ...whereFind, nome: ILike(`%${String(nome).replace(/ /g, '%')}%`) };
+        }
+
         const result = await this.aplicativoRepo.findAndCount({
             select: ['id', 'nome', 'credencialFirebase'],
-            where: {
-                ...(nome ? { nome: ILike(`%${String(nome).replace(/ /g, '%')}%`) } : undefined),
-                cancelado: deletedo,
-            },
+            withDeleted: false,
+            where: whereFind,
             take,
             skip,
             order: {
@@ -59,11 +70,12 @@ export class AplicativoService {
         };
     }
 
-    async findOne(id: number) {
+    async findOne(id: string) {
         const aplicativo = await this.aplicativoRepo.findOne({
+            select: ['id', 'nome', 'credencialFirebase'],
+            withDeleted: false,
             where: {
                 id,
-                cancelado: false,
             },
         });
 
@@ -71,47 +83,45 @@ export class AplicativoService {
             throw new BadRequestException('Aplicativo não encontrado.');
         }
 
-        return { id: aplicativo.id, nome: aplicativo.nome, credencialFirebase: aplicativo.credencialFirebase };
+        return aplicativo;
     }
 
-    async update(usuarioAutenticado: IUsuarioAutenticado, id: number, updateAplicativoDto: UpdateAplicativoDto) {
+    async update(usuarioAutenticado: IUsuarioAutenticado, id: string, updateAplicativoDto: UpdateAplicativoDto) {
         const { nome, credencialFirebase } = updateAplicativoDto;
 
-        const aplicativoAlterado = await this.aplicativoRepo.update(
-            { id, cancelado: false },
-            {
-                nome,
-                credencialFirebase,
-                alteradoPorTipo: usuarioAutenticado.tipoMatricula,
-                alteradoPorMatricula: usuarioAutenticado.codigoMatricula,
-                alteradoEm: new Date(),
-            },
-        );
+        const aplicativo = await this.aplicativoRepo.findOne(id, {
+            withDeleted: false,
+        });
 
-        if (aplicativoAlterado.raw == 0) {
+        if (!aplicativo) {
             throw new BadRequestException('Aplicativo não encontrado.');
         }
 
-        const aplicativo = await this.findOne(id);
+        await this.aplicativoRepo.update(id, {
+            nome,
+            credencialFirebase,
+            alteradoPorTipo: usuarioAutenticado.tipoMatricula,
+            alteradoPorMatricula: usuarioAutenticado.codigoMatricula,
+        });
 
-        return { id: aplicativo.id, nome: aplicativo.nome, credencialFirebase: aplicativo.credencialFirebase };
+        return { id, nome, credencialFirebase };
     }
 
-    async remove(usuarioAutenticado: IUsuarioAutenticado, id: number) {
-        const aplicativo = await this.aplicativoRepo.update(
-            { id, cancelado: false },
-            {
-                alteradoPorTipo: usuarioAutenticado.tipoMatricula,
-                alteradoPorMatricula: usuarioAutenticado.codigoMatricula,
-                alteradoEm: new Date(),
-                cancelado: true,
-            },
-        );
+    async remove(usuarioAutenticado: IUsuarioAutenticado, id: string) {
+        const aplicativo = await this.aplicativoRepo.findOne(id, {
+            withDeleted: false,
+        });
 
-        if (aplicativo.raw == 0) {
+        if (!aplicativo) {
             throw new BadRequestException('Aplicativo não encontrado.');
         }
 
-        return { message: 'Aplicativo removido com sucesso' };
+        await this.aplicativoRepo.update(id, {
+            canceladoEm: new Date(),
+            alteradoPorTipo: usuarioAutenticado.tipoMatricula,
+            alteradoPorMatricula: usuarioAutenticado.codigoMatricula,
+        });
+
+        return 'Aplicativo removido com sucesso';
     }
 }

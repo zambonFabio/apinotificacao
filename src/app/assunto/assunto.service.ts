@@ -54,18 +54,27 @@ export class AssuntoService {
         const page = +query.page;
         const take = query.limit ? +query.limit : 20;
         const deletedo = query.deletedo === 'true';
-        const descricao = query.descricao ?? null;
-        const opcional = query.opcional ?? null;
+        const descricao = query.descricao;
+        const opcional = eval(query.opcional);
 
         const skip = take * (page - 1);
 
+        console.log(opcional);
+
+        let whereFind = {};
+        whereFind = { ...{ cancelado: deletedo } };
+
+        if (descricao) {
+            whereFind = { ...whereFind, descricao: ILike(`%${String(descricao).replace(/ /g, '%')}%`) };
+        }
+
+        if (opcional) {
+            whereFind = { ...whereFind, opcional };
+        }
+
         const result = await this.assuntoRepo.findAndCount({
             select: ['id', 'descricao', 'opcional'],
-            where: {
-                ...(descricao ? { descricao: ILike(`%${String(descricao).replace(/ /g, '%')}%`) } : undefined),
-                ...(opcional ? { opcional: opcional } : undefined),
-                cancelado: deletedo,
-            },
+            where: whereFind,
             take,
             skip,
             order: {

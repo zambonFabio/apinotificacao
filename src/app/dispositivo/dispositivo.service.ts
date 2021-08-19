@@ -21,7 +21,7 @@ export class DispositivoService {
     async create(usuarioAutenticado: IUsuarioAutenticado, createDispositivoDto: CreateDispositivoDto) {
         const { usuario, aplicativo, codigo, tokenFirebase } = createDispositivoDto;
 
-        await this.aplicativoService.findOne(aplicativo.id);
+        // await this.aplicativoService.findOne(aplicativo.id);
 
         const queryRunner = this.connection.createQueryRunner();
         try {

@@ -1,5 +1,6 @@
 import { Dispositivo } from 'src/app/dispositivo/entities/dispositivo.entity';
-import { BeforeInsert, Column, Entity, getManager, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { UsuarioAssunto } from 'src/app/usuario-assunto/entities/usuario-assunto.entity';
+import { BeforeInsert, Column, Entity, getManager, JoinColumn, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity('GNTF_USUARIO')
 export class Usuario {
@@ -33,6 +34,10 @@ export class Usuario {
     @OneToMany(() => Dispositivo, (dispositivo: Dispositivo) => dispositivo.usuario)
     @JoinColumn({ name: 'ID_USUARIO', referencedColumnName: 'usuarioId' })
     dispositivos: Dispositivo[];
+
+    @OneToMany(() => UsuarioAssunto, (usuarioAssunto: UsuarioAssunto) => usuarioAssunto.usuario)
+    @JoinColumn({ name: 'ID_USUARIO', referencedColumnName: 'usuarioId' })
+    UsuarioAssuntoUsuarios: UsuarioAssunto[];
 
     @BeforeInsert()
     async beforeinsert() {

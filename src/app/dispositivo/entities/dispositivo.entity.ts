@@ -44,9 +44,9 @@ export class Dispositivo {
     @JoinColumn({ name: 'ID_USUARIO', referencedColumnName: 'id' })
     usuario: Usuario;
 
-    @ManyToOne(() => Aplicativo, (aplicativo) => aplicativo.dispositivos)
-    @JoinColumn({ name: 'ID_APLICATIVO', referencedColumnName: 'id' })
-    aplicativo: Aplicativo;
+    // @ManyToOne(() => Aplicativo, (aplicativo) => aplicativo.dispositivos)
+    // @JoinColumn({ name: 'ID_APLICATIVO', referencedColumnName: 'id' })
+    // aplicativo: Aplicativo;
 
     @BeforeInsert()
     async beforeinsert() {
